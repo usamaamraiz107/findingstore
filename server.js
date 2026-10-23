@@ -63,9 +63,9 @@ const server=http.createServer(async(req,res)=>{
       if(imageUrl){const k=imageUrl+'|'+cc;if(!CACHE[k])CACHE[k]=await serp(imageUrl,cc);return json(res,200,CACHE[k]);}
       const buf=Buffer.from(image.split(',')[1],'base64');const h=require('crypto').createHash('sha1').update(buf).digest('hex')+'|'+cc;
       if(CACHE[h]) return json(res,200,CACHE[h]);
-      const fd=new FormData();fd.append('reqtype','fileupload');fd.append('time','72h');fd.append('fileToUpload',new Blob([buf],{type:'image/jpeg'}),'upload.jpg');
-      const pub=(await (await fetch('https://litterbox.catbox.moe/resources/internals/api.php',{method:'POST',body:fd})).text()).trim();
-      if(!pub.startsWith('https://')) throw new Error('Temporary image host failed: '+pub.slice(0,100));
+      const up=path.join(__dirname,'uploads');for(const x of fs.readdirSync(up)){try{const fp=path.join(up,x);if(Date.now()-fs.statSync(fp).mtimeMs>36e5)fs.unlinkSync(fp)}catch{}}
+      const id=require('crypto').randomBytes(12).toString('hex')+'.jpg';fs.writeFileSync(path.join(up,id),buf);
+      const pub=(process.env.PUBLIC_URL||'https://freefinding.store')+'/uploads/'+id;
       console.log('uploaded',pub);CACHE[h]=await serp(pub,cc);CACHE[h].imageUrl=pub;CACHE[pub+'|'+cc]=CACHE[h];return json(res,200,CACHE[h]);
 json(res,200,await serp(`${process.env.PUBLIC_URL}/uploads/${id}`,cc));}catch(e){json(res,500,{error:String(e)})}});return}
   let f=decodeURIComponent(req.url.split('?')[0]);if(f.endsWith('/'))f+='index.html';
