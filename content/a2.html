@@ -1,0 +1,44 @@
+<p>Sometimes you know exactly what you want but not what it is called. You saw a lamp in a café, a bag in a video, or a pet bed in a friend's photo. Typing "fluffy round thing with ears" into a search box rarely helps. Reverse image search solves this by letting a picture be the query. Here is how it works behind the scenes and how to get better results when you use it for shopping.</p>
+
+<h2>From pixels to a "fingerprint"</h2>
+<p>A computer does not see a photo the way you do. Modern visual search systems pass the image through a neural network trained on millions of labelled pictures. The network turns the image into a long list of numbers, often called an <em>embedding</em> or feature vector. You can think of it as a fingerprint that captures shape, texture, colour and patterns. Images of similar objects produce fingerprints that sit close together in this numeric space, even if they were photographed from different angles or in different lighting.</p>
+<p>When you submit a photo, the search engine computes its fingerprint and looks for the nearest fingerprints in an enormous index of images collected from the web. Because comparing against billions of items one by one would be too slow, these systems use approximate nearest-neighbour techniques that quickly narrow the search to the most promising candidates.</p>
+
+<h2>Recognising objects, text and products</h2>
+<p>Good visual search does more than match whole pictures. It can detect separate objects in a scene, so a photo of a living room can lead to the sofa, the rug or the lamp individually. It can also read text in the image (brand names, labels, model numbers) using optical character recognition, and combine that with the visual match. For shopping, the engine then links matching images to product pages, which is where prices and store names come from.</p>
+
+<h2>How FindingStore uses it</h2>
+<p>FindingStore sends your photo to Google Lens through a third-party API (SerpAPI). Lens returns a list of "visual matches": web pages showing images that look like yours, often with a title, store name and price. We then:</p>
+<ul>
+<li>collect the words that appear most often across those match titles to build a plain description of the product;</li>
+<li>score each result by how well its title fits that description, so near-identical items rank above loosely similar ones;</li>
+<li>split results into local stores (for your country) and international stores, sorted lowest price first;</li>
+<li>place weaker matches under "Similar items" so you can still browse them without confusing them with exact matches.</li>
+</ul>
+<p>This approach is why a photo of an unbranded product can still find sellers. The match is based on what the item looks like rather than what it is called.</p>
+
+<h2>Why results are sometimes wrong</h2>
+<p>Visual search is impressive but not perfect. Common reasons for poor matches include:</p>
+<ul>
+<li><strong>Busy backgrounds.</strong> If the product fills only a small part of the frame, the engine may focus on something else.</li>
+<li><strong>Generic shapes.</strong> Plain items (a white mug, a black T-shirt) look like thousands of other products.</li>
+<li><strong>Lighting and colour casts.</strong> Warm indoor light can make a grey item look beige, steering results toward the wrong colour.</li>
+<li><strong>Reflections and blur.</strong> Shiny or out-of-focus photos lose the details that distinguish one product from another.</li>
+<li><strong>Stale listings.</strong> The index may still contain pages for items that are out of stock or whose price has changed.</li>
+</ul>
+
+<h2>Tips for better shopping matches</h2>
+<ol>
+<li><strong>Crop tightly</strong> around the product so it fills most of the image.</li>
+<li><strong>Use a plain background</strong> if you are photographing something you own.</li>
+<li><strong>Shoot in daylight</strong>, straight on, with the whole item in view.</li>
+<li><strong>Include distinctive details</strong>: a logo, a pattern, a unique shape such as paw-shaped cushions or a special handle.</li>
+<li><strong>Try a second angle</strong> if the first search returns mostly look-alikes.</li>
+<li><strong>Use the description</strong> the tool builds as a text search too; combining both methods catches listings the other missed.</li>
+</ol>
+
+<h2>Privacy considerations</h2>
+<p>Any image you upload for a search is processed by the search provider. Avoid uploading photos that show faces, addresses, documents or anything personal. Crop to just the product. On FindingStore, uploaded images are placed on a temporary file host that deletes them automatically after about 72 hours; our <a href="/privacy">Privacy Policy</a> explains the details.</p>
+
+<h2>The bottom line</h2>
+<p>Reverse image search turns "I don't know what it's called" into a list of real listings within seconds. Treat the results as leads, not final answers. Check that the product, size and seller match what you want, and confirm the price on the store's page before buying.</p>

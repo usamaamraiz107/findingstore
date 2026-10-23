@@ -66,8 +66,10 @@ const server=http.createServer(async(req,res)=>{
       if(!pub.startsWith('https://')) throw new Error('Temporary image host failed: '+pub.slice(0,100));
       console.log('uploaded',pub);CACHE[h]=await serp(pub,cc);CACHE[h].imageUrl=pub;CACHE[pub+'|'+cc]=CACHE[h];return json(res,200,CACHE[h]);
 json(res,200,await serp(`${process.env.PUBLIC_URL}/uploads/${id}`,cc));}catch(e){json(res,500,{error:String(e)})}});return}
-  let f=req.url.split('?')[0];if(f==='/')f='/index.html';
-  const p=f.startsWith('/uploads/')?path.join(__dirname,f):path.join(__dirname,'public',f);
-  if(!p.startsWith(__dirname)||!fs.existsSync(p)){res.writeHead(404);return res.end()}
-  res.writeHead(200,{'content-type':{'.html':'text/html; charset=utf-8','.js':'text/javascript','.jpg':'image/jpeg'}[path.extname(p)]||'application/octet-stream'});fs.createReadStream(p).pipe(res);});
+  let f=decodeURIComponent(req.url.split('?')[0]);if(f.endsWith('/'))f+='index.html';
+  let p=f.startsWith('/uploads/')?path.join(__dirname,f):path.join(__dirname,'public',f);
+  if(!path.extname(p)&&fs.existsSync(p+'.html'))p+='.html';
+  if(fs.existsSync(p)&&fs.statSync(p).isDirectory()&&!f.startsWith('/uploads/')){res.writeHead(301,{location:f+'/'});return res.end()}
+  if(!(p.startsWith(path.join(__dirname,'public')+path.sep)||p.startsWith(path.join(__dirname,'uploads')+path.sep))||!fs.existsSync(p)||fs.statSync(p).isDirectory()){const nf=path.join(__dirname,'public','404.html');res.writeHead(404,{'content-type':'text/html; charset=utf-8'});return res.end(fs.existsSync(nf)?fs.readFileSync(nf):'Not found')}
+  res.writeHead(200,{'content-type':{'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.xml':'application/xml','.txt':'text/plain; charset=utf-8','.jpg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml'}[path.extname(p)]||'application/octet-stream'});fs.createReadStream(p).pipe(res);});
 fs.mkdirSync(path.join(__dirname,'uploads'),{recursive:true});server.listen(PORT,()=>console.log('FindingStore on',PORT,KEY?'LIVE':'MOCK'));
