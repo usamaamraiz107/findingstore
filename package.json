@@ -1,0 +1,9 @@
+{
+  "name": "findingstore",
+  "version": "1.0.0",
+  "description": "Upload a product photo, find the lowest prices locally and internationally.",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=20" },
+  "license": "MIT"
+}

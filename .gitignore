@@ -1,0 +1,16 @@
+node_modules/
+rawcache/
+.env
+.env.*
+*.log
+*.png
+*.jpg
+cloudflared
+before.json
+after.json
+last_lens.json
+lens_debug*.json
+r2.json
+req.json
+result*.json
+shopping_paw.json
