@@ -5,7 +5,7 @@ const COUNTRIES={PK:['Pakistan','PKR',280],IN:['India','INR',83],US:['United Sta
 const LOCAL={PK:['Daraz.pk','PriceOye','Telemart'],IN:['Amazon.in','Flipkart','Croma'],US:['Amazon.com','Walmart','Best Buy'],GB:['Amazon.co.uk','Argos','Currys'],AE:['Amazon.ae','Noon','Sharaf DG'],SA:['Amazon.sa','Noon','Extra'],DE:['Amazon.de','MediaMarkt','Otto'],CA:['Amazon.ca','Best Buy CA','Walmart CA'],AU:['Amazon.com.au','JB Hi-Fi','Kogan'],BD:['Daraz.com.bd','Pickaboo','Star Tech']};
 const CACHE=(()=>{try{return JSON.parse(require('fs').readFileSync(__dirname+'/cache.json'))}catch{return {}}})();const json=(res,c,o)=>{res.writeHead(c,{'content-type':'application/json'});res.end(JSON.stringify(o))};
 async function geo(req){const ip=(req.headers['cf-connecting-ip']||req.headers['x-forwarded-for']||'').split(',')[0].trim();
-  if(!ip) return null; try{const r=await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);const j=await r.json();return j.countryCode||null}catch{return null}}
+  if(!ip) return null; try{const r=await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`,{signal:AbortSignal.timeout(3000)});const j=await r.json();return j.countryCode||null}catch{return null}}
 // ---- Mock provider: clearly labelled example data ----
 function mock(cc){const [name,cur,rate]=COUNTRIES[cc]||COUNTRIES.US;const base=49.99;const q=encodeURIComponent('Example Wireless Earbuds');
   const local=(LOCAL[cc]||LOCAL.US).map((s,i)=>({store:s,price:Math.round(base*rate*(1+0.12*i)),currency:cur,link:`https://www.google.com/search?q=${q}+${encodeURIComponent(s)}`}));
@@ -54,6 +54,8 @@ async function serp(imgUrl,cc){const lc=cc.toLowerCase();
   await ogImage([...local,...localSimilar]);
   return {mode:'live',product:query,lensTitle:vm[0]?.title,keywords:core,local,localSimilar,intl,intlSimilar};}
 const server=http.createServer(async(req,res)=>{
+  if(req.url==='/healthz'){res.writeHead(200,{'content-type':'text/plain'});return res.end('ok')}
+  if((req.headers.host||'').toLowerCase().startsWith('findingstore.onrender.com')&&!req.url.startsWith('/api/')){res.writeHead(301,{location:'https://freefinding.store'+req.url});return res.end()}
   if(req.url==='/api/geo'){const cc=await geo(req);return json(res,200,{country:cc,countries:COUNTRIES,live:!!KEY})}
   if(req.url==='/api/search'&&req.method==='POST'){let b='';req.on('data',d=>{b+=d;if(b.length>12e6)req.destroy()});req.on('end',async()=>{
     try{const {image,imageUrl,country}=JSON.parse(b);const cc=COUNTRIES[country]?country:'US';

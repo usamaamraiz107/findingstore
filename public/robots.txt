@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /uploads/
 
-Sitemap: https://findingstore.onrender.com/sitemap.xml
+Sitemap: https://freefinding.store/sitemap.xml

@@ -18,4 +18,4 @@ Without `SERPAPI_KEY` the app runs in clearly labelled DEMO (mock) mode. No depe
 - Prices from the Google-search fallback are marked "from search results, verify on store".
 - `cache.json` holds a seeded example result.
 
-Deployed on Render (free): https://findingstore.onrender.com
+Deployed on Render (free): https://freefinding.store
